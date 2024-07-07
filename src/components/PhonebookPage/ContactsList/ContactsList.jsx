@@ -1,10 +1,26 @@
-const ContactsList = ({ contacts, handleDeleteContact }) => {
+import { getContacts, getFilter } from '../../Redux/selectors';
+import { useSelector } from 'react-redux';
+import ContactsListItem from './ContactsListItem/ContactsListItem';
+
+const ContactsList = () => {
+
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+
+  const getFilteredContacts = () => {
+    const normalizedFilter = filter.toLowerCase();
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter),
+    );
+  };
+
+  const filteredContacts = getFilteredContacts();
+
   return (
     <ul>
-      {contacts.map(contact => (
+      {filteredContacts.map(contact => (
         <li key={contact.id}>
-          {contact.name}: {contact.number}
-          <button onClick={() => handleDeleteContact(contact.id)}>Delete</button>
+          <ContactsListItem contact={contact} />
         </li>
       ))}
     </ul>
